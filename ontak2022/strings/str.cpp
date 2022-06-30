@@ -1,40 +1,44 @@
+#pragma GCC optimize("Ofast,inline") // Ofast = O3,fast-math,allow-store-data-races,no-protect-parens                                                                                                                                           
+#pragma GCC target("bmi,bmi2,lzcnt,popcnt")                      // bit manipulation                                                                            
+#pragma GCC target("movbe")                                      // byte swap   
+#pragma GCC target("aes,pclmul,rdrnd")                           // encryption  
+#pragma GCC target("avx,avx2,f16c,fma,sse3,ssse3,sse4.1,sse4.2") // SIMD
 #include <bits/stdc++.h>
 
 using namespace std;
 
 const int r = 1e7;
 int n, m;
-vector <bool> c1, c2;
+int kmp[r];
 bool cz1[200];
 bool cz2[200];
 int wyn[r];
+int P[r];
 
 void spr()
 {
-    /*for(auto x : c1)
-        cout << x << " ";
-    cout << " # ";
-    for(auto x : c2)
-        cout << x << " ";
-    cout << "\n";*/
-    for(int i = 0; i < n - m + 1; i++)
+     /*for (int i = 0; i < n + m + 1; i++) 
+        cout << kmp[i] << " ";*/
+    for (int i = 1; i < n + m + 1; i++) 
     {
-        bool f = 1;
-        for(int j = i; j < i + m; j++)
+        int j = P[i - 1];
+        while (j > 0 && kmp[i] != kmp[j])
         {
-            if(c1[j] != c2[j - i])
-            {
-                f = 0;
-                break;
-            }
+            //obl++;
+            j = P[j - 1];
         }
-        if(f)
-            wyn[i]++;
+        if (kmp[i] == kmp[j])
+            j++;
+        P[i] = j;
+        if(j == m)
+            wyn[i - m - m]++;
     }
+    //cout << "\n";
 }
 
 int main()
 {
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
     string s1, s2;
     cin >> s1 >> s2;
     n = s1.size(), m = s2.size();
@@ -47,29 +51,35 @@ int main()
         cz1[s1[i]] = 1;
     for(int i = 0; i < m; i++)
         cz2[s2[i]] = 1;
-    int ile;
+    int ile = 0;
     for(int i = 'a'; i <= 'z'; i++)
     {
-        if(!cz1[i]) 
+        if(!cz2[i]) 
             continue;
-        c1.clear();
-        for(auto x : s1)
+        int nu = 0;
+        for(auto x : s2)
+        {
             if(x == i)
-                c1.push_back(1);
+                kmp[nu] = 1;
             else
-                c1.push_back(0);
-        ile = 0;
+                kmp[nu] = 0;
+            nu++;
+        }
+        ile ++;
+        kmp[m] = 2;
         for(int j = 'a'; j <= 'z'; j++)
         {
-            if(!cz2[j]) 
+            if(!cz1[j]) 
                 continue;
-            ile ++;
-            c2.clear();
-            for(auto x : s2)
+            int nr = m + 1;
+            for(auto x : s1)
+            {
                 if(x == j)
-                    c2.push_back(1);
+                    kmp[nr] = 1;
                 else
-                    c2.push_back(0);
+                    kmp[nr] = 0;
+                nr++;
+            }
             spr();
         }
     }
