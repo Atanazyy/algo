@@ -94,7 +94,7 @@ pair<double, int> brut2(int p, int k)
 
 pair<double, int> best2(int p, int k)
 {
-    //cout << p << " "<< k<<"\n";
+    cout << p << " "<< k<<"\n";
     if((k - p + 1) < 4)
         return brut2(p, k);
     int mid = (p + k) / 2;
@@ -174,11 +174,11 @@ int main()
         cout << fixed << setprecision(10) << ans/ 2;
         return 0;
     }
-    if(m <= 100)
+    /*if(m <= 100)
     {
         cout << fixed << setprecision(10) << min(ans, dodziu()) / 2;
         return 0;
-    }
+    }*/
     sort(gwi + 1, gwi + n + m + 1, porx);
     auto ans2 = best2(1, n + m);
     swap(gwi[ans2.s], gwi[1]);
